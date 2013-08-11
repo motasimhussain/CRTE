@@ -67,6 +67,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="readWrite.cs" />
+    <Compile Include="search.cs" />
     <Compile Include="SellItems.cs">
       <SubType>Form</SubType>
     </Compile>

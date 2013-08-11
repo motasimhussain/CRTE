@@ -89,24 +89,24 @@ namespace CRTE
             }
         }
 
-        //public void Insert(string u_name, string u_pass, string u_type, string name, string last_name, string nic)
-        //{
-        //    string query = "INSERT INTO login (u_id,pass,user_type,name,last_name,nic) VALUES ('" + u_name + "','" + u_pass + "','" + u_type + "','" + name + "','" + last_name + "','" + nic + "')";
+        public void Insert(string cName,string pName,string pSno,string warr,string date,float price,float profit,float balance)
+        {
+            string query = "INSERT INTO sales (Client_Name,Product_Name,Product_SerialNo,Warranty,Date,Price,Profit,Balance) VALUES ('"+cName+"','"+pName+"','"+pSno+"','"+warr+"','"+date+"','"+price+"','"+profit+"','"+balance+"')";
 
-        //    if (this.OpenConnection() == true)
-        //    {
-        //        MySqlCommand cmd = new MySqlCommand(query, con);
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(query, con);
 
-        //        cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
 
-        //        this.CloseConnection();
-        //    }
-        //}
+                this.CloseConnection();
+            }
+        }
 
         //Update statement
-        public virtual void Update()
+        public virtual void UpdateStock(string table,string field , int data, string sField,int sData)
         {
-            string qurey = "UPDATE login SET u_id='MoniXx', pass='admin' Where u_id = 'admin'";
+            string qurey = "UPDATE "+table+" SET "+field+" ='"+data+"' Where "+sField+" = '"+sData+"'";
 
             if (this.OpenConnection() == true)
             {
@@ -222,19 +222,67 @@ namespace CRTE
             mySqlDataAdapter.DeleteCommand = mySqlCommandBuilder.GetDeleteCommand();
             mySqlDataAdapter.InsertCommand = mySqlCommandBuilder.GetInsertCommand();
 
-            dataTable = new DataTable();
-            mySqlDataAdapter.Fill(dataTable);
+            //dataTable = new DataTable();
+            //mySqlDataAdapter.Fill(dataTable);
 
-            bindingSource = new BindingSource();
-            bindingSource.DataSource = dataTable;
+            //bindingSource = new BindingSource();
+            //bindingSource.DataSource = dataTable;
 
-            dataGridView.DataSource = bindingSource;
+            //dataGridView.DataSource = bindingSource;
+
+
+            DataSet DS = new DataSet();
+            mySqlDataAdapter.Fill(DS);
+            DS.Tables[0].TableName = tableName;
+            dataGridView.DataSource = DS.Tables[0];
         }
+
+
+
+        public virtual void saveSql(DataGridView dgv)
+        {
+            DataTable changes = ((DataTable)dgv.DataSource).GetChanges();
+
+
+            if (changes != null)
+            {
+                try
+                {
+                    MySqlCommandBuilder mcb = new MySqlCommandBuilder(mySqlDataAdapter);
+                    mySqlDataAdapter.UpdateCommand = mcb.GetUpdateCommand();
+                    mySqlDataAdapter.Update(changes);
+                    ((DataTable)dgv.DataSource).AcceptChanges();
+                }
+                catch (MySqlException)
+                {
+                    MessageBox.Show("Oops something went wrong =( ");
+                }
+            }
+        }
+
+
+
 
         public void Save()
         {
             mySqlDataAdapter.Update(dataTable);
         }
+
+
+        public void FillComboBox(ComboBox cb,string tableName, string col)
+        {
+            string query = "SELECT "+ col +" FROM " + tableName;
+            MySqlCommand cmdSel = new MySqlCommand(query, con);
+            DataTable dt = new DataTable();
+            MySqlDataAdapter da = new MySqlDataAdapter(cmdSel);
+            da.Fill(dt);
+            cb.DataSource = dt;
+            cb.DisplayMember = col;//column name to display
+        }
+
+
+
+       
 
         //Backup
         public void Backup()

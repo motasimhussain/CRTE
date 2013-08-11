@@ -50,7 +50,15 @@ namespace CRTE
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Return)
+        }
+
+        private void button1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+        }
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (Char)Keys.Return)
             {
                 button1.PerformClick();
             }
